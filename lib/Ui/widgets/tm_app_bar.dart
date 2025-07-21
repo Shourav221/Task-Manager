@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/Ui/controllers/auth_controller.dart';
 import 'package:task_manager/Ui/screens/Sign_In_Screen.dart';
 import 'package:task_manager/Ui/screens/update_profile_screen.dart';
 import 'package:task_manager/app.dart';
@@ -54,7 +55,8 @@ class _TMAppBarState extends State<TMAppBar> {
     );
   }
 
-  void _onTapLogOut() {
+  Future<void> _onTapLogOut() async {
+    await AuthController.clearUserData();
     Navigator.pushNamedAndRemoveUntil(
       context,
       SignInScreen.name,

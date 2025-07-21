@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:task_manager/Ui/controllers/auth_controller.dart';
 import 'package:task_manager/Ui/screens/Sign_In_Screen.dart';
+import 'package:task_manager/Ui/screens/main_nav_bar_holder_screen.dart';
 import 'package:task_manager/Ui/utils/asset_paths.dart';
 import 'package:task_manager/Ui/widgets/screen_background.dart';
 
@@ -23,7 +25,13 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _moveToNextScreen() async {
     await Future.delayed(Duration(seconds: 2));
-    Navigator.pushNamed(context, SignInScreen.name);
+    bool isLoggedIn = await AuthController.isUserLoggedIn();
+    if(isLoggedIn){
+      Navigator.pushReplacementNamed(context, MainNavBarHolderScreen.name);
+    }
+    else {
+      Navigator.pushReplacementNamed(context, SignInScreen.name);
+    }
   }
 
   @override
