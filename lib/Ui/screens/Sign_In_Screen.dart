@@ -1,9 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/Data/service/network_caller.dart';
 import 'package:task_manager/Ui/screens/forgot_password_screen.dart';
 import 'package:task_manager/Ui/screens/main_nav_bar_holder_screen.dart';
 import 'package:task_manager/Ui/screens/sign_up_screen.dart';
+import 'package:task_manager/Ui/utils/urls.dart';
+import 'package:task_manager/Ui/widgets/center_circular_progress_indicator.dart';
 import 'package:task_manager/Ui/widgets/screen_background.dart';
+import 'package:task_manager/Ui/widgets/snackbar_message.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -17,9 +21,8 @@ class _SignInScreenState extends State<SignInScreen> {
   TextEditingController _emailTEController = TextEditingController();
   TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  bool _signInProgress = false;
   bool isVisible = false;
-
   void toggleIcon() {
     isVisible = !isVisible;
   }
@@ -82,9 +85,13 @@ class _SignInScreenState extends State<SignInScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _onTapSignIn,
-                    child: Icon(Icons.arrow_circle_right_outlined),
+                  Visibility(
+                    visible: _signInProgress == false,
+                    replacement: CenterCircularProgressIndicator(),
+                    child: ElevatedButton(
+                      onPressed: _onTapSignIn,
+                      child: Icon(Icons.arrow_circle_right_outlined),
+                    ),
                   ),
                   const SizedBox(height: 24),
                   Center(
@@ -133,11 +140,32 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _onTapSignIn() {
     if (_formKey.currentState!.validate()) {
+      _signIn();
+    }
+  }
+
+  Future<void> _signIn() async {
+    _signInProgress = true;
+    setState(() {});
+    Map<String, String> responseBody = {
+      "email": _emailTEController.text.trim(),
+      "password": _passwordTEController.text,
+    };
+    NetworkResponse response = await NetworkCaller.postRequest(
+      url: Urls.loginUrls,
+      body: responseBody,
+    );
+    _signInProgress = false;
+    setState(() {});
+    if (response.isSuccess) {
       Navigator.pushNamedAndRemoveUntil(
         context,
         MainNavBarHolderScreen.name,
         (predicate) => false,
       );
+      showSnackBarMessage(context, 'Log in successful');
+    } else {
+      showSnackBarMessage(context, response.errorMessage!);
     }
   }
 
