@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/Data/Models/task_model.dart';
 
 enum TaskType { tNew, completed, cancelled, progress }
 
 class TaskCard extends StatelessWidget {
-  const TaskCard({super.key, required this.taskType});
+  const TaskCard({super.key, required this.taskType, required this.taskModel});
 
   final TaskType taskType;
+  final TaskModel taskModel;
 
   @override
   Widget build(BuildContext context) {
@@ -18,21 +20,24 @@ class TaskCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Title will be written here',
+              taskModel.title,
               style: TextStyle(fontWeight: FontWeight.w700, fontSize: 25),
             ),
             Text(
-              'Task details will be written here',
+              taskModel.description,
               style: TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
             ),
             const SizedBox(height: 16),
-            Text('Date: 09.09.2002'),
+            Text("Date: ${taskModel.createdDate}"),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Chip(
-                  label: Text(_getTaskTypeName(), style: TextStyle(color: Colors.white)),
+                  label: Text(
+                    _getTaskTypeName(),
+                    style: TextStyle(color: Colors.white),
+                  ),
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -67,13 +72,12 @@ class TaskCard extends StatelessWidget {
       case TaskType.cancelled:
         return Colors.red;
       case TaskType.progress:
-       return Colors.purple;
+        return Colors.purple;
     }
   }
 
-  String _getTaskTypeName(){
-    switch(taskType){
-
+  String _getTaskTypeName() {
+    switch (taskType) {
       case TaskType.tNew:
         return 'New';
       case TaskType.completed:
@@ -81,7 +85,7 @@ class TaskCard extends StatelessWidget {
       case TaskType.cancelled:
         return 'Cancelled';
       case TaskType.progress:
-       return 'Progress';
+        return 'Progress';
     }
   }
 }

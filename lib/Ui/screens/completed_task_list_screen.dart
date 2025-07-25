@@ -9,7 +9,7 @@ class CompletedTaskListScreen extends StatelessWidget {
     return ListView.builder(
         itemCount: 10,
         itemBuilder: (context,index){
-      return TaskCard(taskType: TaskType.completed,);
+      // return TaskCard(taskType: TaskType.completed,);
     });
   }
 }

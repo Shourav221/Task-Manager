@@ -1,5 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:task_manager/Data/Models/task_model.dart';
+import 'package:task_manager/Data/service/network_caller.dart';
 import 'package:task_manager/Ui/screens/add_new_task_screen.dart';
+import 'package:task_manager/Ui/utils/urls.dart';
+import 'package:task_manager/Ui/widgets/center_circular_progress_indicator.dart';
+import 'package:task_manager/Ui/widgets/snackbar_message.dart';
 
 import '../widgets/task_card.dart';
 import '../widgets/task_count_summary_card.dart';
@@ -12,6 +19,14 @@ class NewTaskListScreen extends StatefulWidget {
 }
 
 class _NewTaskListScreenState extends State<NewTaskListScreen> {
+  bool _getNewTaskInProgress = false;
+  List<TaskModel> _newTaskList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getNewTaskList();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,11 +50,15 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
             ),
 
             Expanded(
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return TaskCard(taskType: TaskType.tNew,);
-                },
+              child: Visibility(
+                visible: _getNewTaskInProgress == false,
+                replacement: CenterCircularProgressIndicator(),
+                child: ListView.builder(
+                  itemCount: _newTaskList.length,
+                  itemBuilder: (context, index) {
+                    return TaskCard(taskType: TaskType.tNew, taskModel: _newTaskList[index],);
+                  },
+                ),
               ),
             ),
           ],
@@ -50,6 +69,27 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  Future<void> _getNewTaskList() async {
+    _getNewTaskInProgress = true;
+    setState(() {});
+    NetworkResponse response = await NetworkCaller.getRequest(
+      url: Urls.getNewTasksUrls,
+    );
+
+    if (response.isSuccess) {
+      List<TaskModel> list = [];
+      for (Map<String, dynamic> jsonData in response.body!['data']) {
+        list.add(TaskModel.formJson(jsonData));
+      }
+      _newTaskList = list;
+    } else {
+      showSnackBarMessage(context, response.errorMessage!);
+    }
+
+    _getNewTaskInProgress = false;
+    setState(() {});
   }
 
   void _addNewTask() {

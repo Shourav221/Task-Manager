@@ -26,8 +26,12 @@ class NetworkCaller {
   static Future<NetworkResponse> getRequest({required String url}) async {
     try {
       Uri uri = Uri.parse(url);
-      _logRequest(url, null, null);
-      Response response = await get(uri);
+      final Map<String, String> headers = {
+        'token': AuthController.accessToken ?? '',
+      };
+
+      _logRequest(url, null, headers);
+      Response response = await get(uri,headers: headers);
       _logResponse(url, response);
       if (response.statusCode == 200) {
         final decodeJson = jsonDecode(response.body);
@@ -86,7 +90,7 @@ class NetworkCaller {
           body: decodeJson,
         );
       } else if (response.statusCode == 401) {
-        if(isFromLogin) {
+        if(isFromLogin == false) {
           _onUnAuthorize();
         }
         return NetworkResponse(

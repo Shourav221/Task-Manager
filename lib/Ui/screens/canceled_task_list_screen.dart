@@ -7,9 +7,10 @@ class CanceledTaskListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: 10,
-        itemBuilder: (context,index){
-      return TaskCard(taskType: TaskType.cancelled,);
-    });
+      itemCount: 10,
+      itemBuilder: (context, index) {
+        // return TaskCard(taskType: TaskType.cancelled, taskModel: null);
+      },
+    );
   }
 }
