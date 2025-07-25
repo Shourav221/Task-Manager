@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:task_manager/Ui/controllers/auth_controller.dart';
-import 'package:task_manager/Ui/screens/Sign_In_Screen.dart';
+import 'package:task_manager/Ui/screens/sign_In_Screen.dart';
 import 'package:task_manager/Ui/screens/main_nav_bar_holder_screen.dart';
 import 'package:task_manager/Ui/utils/asset_paths.dart';
 import 'package:task_manager/Ui/widgets/screen_background.dart';
@@ -18,7 +18,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _moveToNextScreen();
   }

@@ -20,8 +20,8 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  TextEditingController _emailTEController = TextEditingController();
-  TextEditingController _passwordTEController = TextEditingController();
+  final TextEditingController _emailTEController = TextEditingController();
+  final TextEditingController _passwordTEController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _signInProgress = false;
   bool isVisible = false;
@@ -156,6 +156,7 @@ class _SignInScreenState extends State<SignInScreen> {
     NetworkResponse response = await NetworkCaller.postRequest(
       url: Urls.loginUrls,
       body: responseBody,
+      isFromLogin: true,
     );
     _signInProgress = false;
     setState(() {});
@@ -184,7 +185,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _emailTEController.dispose();
     _passwordTEController.dispose();

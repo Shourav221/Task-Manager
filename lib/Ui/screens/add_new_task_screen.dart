@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/Data/service/network_caller.dart';
+import 'package:task_manager/Ui/screens/main_nav_bar_holder_screen.dart';
+import 'package:task_manager/Ui/utils/urls.dart';
+import 'package:task_manager/Ui/widgets/center_circular_progress_indicator.dart';
 import 'package:task_manager/Ui/widgets/screen_background.dart';
+import 'package:task_manager/Ui/widgets/snackbar_message.dart';
 import 'package:task_manager/Ui/widgets/tm_app_bar.dart';
 
 class AddNewTaskScreen extends StatefulWidget {
@@ -15,6 +20,7 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
   final TextEditingController _descriptionTEController =
       TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _addNewTaskInProgress = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,9 +64,13 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: _onTapSubmitButton,
-                  child: Icon(Icons.arrow_circle_right_outlined),
+                Visibility(
+                  visible: _addNewTaskInProgress == false,
+                  replacement: CenterCircularProgressIndicator(),
+                  child: ElevatedButton(
+                    onPressed: _onTapSubmitButton,
+                    child: Icon(Icons.arrow_circle_right_outlined),
+                  ),
                 ),
               ],
             ),
@@ -70,11 +80,39 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     );
   }
 
-  void _onTapSubmitButton(){
-    if(_formKey.currentState!.validate()){
-      //todo: Add new task
+  void _onTapSubmitButton() {
+    if (_formKey.currentState!.validate()) {
+      _addNewTask();
     }
-    Navigator.pop(context);
+  }
+
+  Future<void> _addNewTask() async {
+    _addNewTaskInProgress = true;
+    setState(() {});
+
+    Map<String, String> requestBody = {
+      "title": _titleTEController.text.trim(),
+      "description": _descriptionTEController.text.trim(),
+      "status": "New",
+    };
+
+    NetworkResponse response = await NetworkCaller.postRequest(
+      url: Urls.createNewTaskUrls,
+      body: requestBody,
+    );
+
+    _addNewTaskInProgress = false;
+    setState(() {});
+
+    if (response.isSuccess) {
+      _titleTEController.clear();
+      _descriptionTEController.clear();
+      Navigator.pushReplacementNamed(context, MainNavBarHolderScreen.name);
+      showSnackBarMessage(context, 'New task Added');
+
+    }else{
+      showSnackBarMessage(context, response.errorMessage!);
+    }
   }
 
   @override

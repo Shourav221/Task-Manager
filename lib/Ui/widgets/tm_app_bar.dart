@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/Ui/controllers/auth_controller.dart';
-import 'package:task_manager/Ui/screens/Sign_In_Screen.dart';
+import 'package:task_manager/Ui/screens/sign_In_Screen.dart';
 import 'package:task_manager/Ui/screens/update_profile_screen.dart';
-import 'package:task_manager/app.dart';
+
 
 class TMAppBar extends StatefulWidget implements PreferredSizeWidget {
   const TMAppBar({super.key});
@@ -29,7 +29,7 @@ class _TMAppBarState extends State<TMAppBar> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Shourav Mahato",
+                  AuthController.userModel!.fullName,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -37,7 +37,7 @@ class _TMAppBarState extends State<TMAppBar> {
                   ),
                 ),
                 Text(
-                  'asashish@gmail.com',
+                  AuthController.userModel!.email,
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 13,
