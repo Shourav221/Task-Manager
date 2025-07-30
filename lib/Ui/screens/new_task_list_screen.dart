@@ -27,11 +27,12 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
     super.initState();
     _getNewTaskList();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             const SizedBox(height: 10),
@@ -56,7 +57,10 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
                 child: ListView.builder(
                   itemCount: _newTaskList.length,
                   itemBuilder: (context, index) {
-                    return TaskCard(taskType: TaskType.tNew, taskModel: _newTaskList[index],);
+                    return TaskCard(
+                      taskType: TaskType.tNew,
+                      taskModel: _newTaskList[index],
+                    );
                   },
                 ),
               ),
